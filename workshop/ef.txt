@@ -1,0 +1,5 @@
+﻿Add-Migration version1 -context ApplicationDBContext
+
+Update-Database -context ApplicationDBContext
+
+Update-Database -context ApplicationDBContext -Migration 0
