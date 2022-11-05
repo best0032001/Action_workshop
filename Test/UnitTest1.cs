@@ -19,10 +19,10 @@ namespace Test
         [TestMethod]
         public void TestGetPerson()
         {
-            List<Person> _peoples = _applicationDBContext.People.ToList();
-            Assert.IsTrue(_peoples.Count > 0);
+            List<Person> peoples = _applicationDBContext.People.ToList();
+            Assert.IsTrue(peoples.Count > 0);
 
-            foreach (Person person in _peoples)
+            foreach (Person person in peoples)
             {
                 switch (person)
                 {
@@ -41,12 +41,26 @@ namespace Test
         public void TestGetDepartment()
         {
 
-            List<Department> _departments = _applicationDBContext.Departments.AsSplitQuery().Include(i => i.Administrator).ToList();
+            List<Department> departments = _applicationDBContext.Departments.AsSplitQuery().Include(i => i.Administrator).ToList();
 
-            foreach (Department department in _departments)
+            foreach (Department department in departments)
             {
                 Console.Write("Department : " + department.Name);
                 Console.WriteLine("  Administrator : " + department.Administrator.FullName);
+            }
+        }
+
+        [TestMethod]
+        public void TestGetStudentEnrollment()
+        {
+            List<Student> students = _applicationDBContext.Students.AsSplitQuery().Include(students => students.Enrollments).ThenInclude(enrollment => enrollment.Course).ToList();
+            foreach (Student student in students)
+            {
+                Console.WriteLine("students : " + student.FullName);
+                foreach (Enrollment enrollment in student.Enrollments)
+                {
+                    Console.WriteLine("         : enrollment : " + enrollment.Course.Title);
+                }
             }
         }
     }
