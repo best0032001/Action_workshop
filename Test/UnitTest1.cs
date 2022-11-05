@@ -9,7 +9,7 @@ namespace Test
     {
         DbContextOptionsBuilder<ApplicationDBContext> optionsBuilder;
         ApplicationDBContext _applicationDBContext;
-        public  UnitTest1()
+        public UnitTest1()
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDBContext>();
             optionsBuilder.UseSqlServer(@"Server=127.0.0.1;Database=workshop;user id=sa;password=Password[12345];Trust Server Certificate = true");
@@ -24,14 +24,23 @@ namespace Test
 
             foreach (Person person in _peoples)
             {
-                Console.WriteLine("Person : " + person.FullName);
+                switch (person)
+                {
+                    case Student:
+                        Console.Write("Person : " + person.FullName);
+                        Console.WriteLine("  is : student");
+                        break;
+                    case Instructor:
+                        Console.Write("Person : " + person.FullName);
+                        Console.WriteLine("  is : instructor");
+                        break;
+                }
             }
- 
         }
         [TestMethod]
         public void TestGetDepartment()
         {
-          
+
             List<Department> _departments = _applicationDBContext.Departments.AsSplitQuery().Include(i => i.Administrator).ToList();
 
             foreach (Department department in _departments)
