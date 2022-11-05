@@ -8,18 +8,18 @@ namespace Test
     public class UnitTest1
     {
         DbContextOptionsBuilder<ApplicationDBContext> optionsBuilder;
-        ApplicationDBContext _applicationDBContext;
+        ApplicationDBContext applicationDBContext;
         public UnitTest1()
         {
             var optionsBuilder = new DbContextOptionsBuilder<ApplicationDBContext>();
             optionsBuilder.UseSqlServer(@"Server=127.0.0.1;Database=workshop;user id=sa;password=Password[12345];Trust Server Certificate = true");
-            _applicationDBContext = new ApplicationDBContext(optionsBuilder.Options);
+            applicationDBContext = new ApplicationDBContext(optionsBuilder.Options);
         }
 
         [TestMethod]
         public void TestGetPerson()
         {
-            List<Person> peoples = _applicationDBContext.People.ToList();
+            List<Person> peoples = applicationDBContext.People.ToList();
             Assert.IsTrue(peoples.Count > 0);
 
             foreach (Person person in peoples)
@@ -41,7 +41,7 @@ namespace Test
         public void TestGetDepartment()
         {
 
-            List<Department> departments = _applicationDBContext.Departments.AsSplitQuery().Include(i => i.Administrator).ToList();
+            List<Department> departments = applicationDBContext.Departments.AsSplitQuery().Include(i => i.Administrator).ToList();
 
             foreach (Department department in departments)
             {
@@ -53,7 +53,7 @@ namespace Test
         [TestMethod]
         public void TestGetStudentEnrollment()
         {
-            List<Student> students = _applicationDBContext.Students.AsSplitQuery().Include(students => students.Enrollments).ThenInclude(enrollment => enrollment.Course).ToList();
+            List<Student> students = applicationDBContext.Students.AsSplitQuery().Include(students => students.Enrollments).ThenInclude(enrollment => enrollment.Course).ToList();
             foreach (Student student in students)
             {
                 Console.WriteLine("students : " + student.FullName);
@@ -67,7 +67,7 @@ namespace Test
         [TestMethod]
         public void TestGetInstructorCourseAssignmentst()
         {
-            List<Instructor> instructors = _applicationDBContext.Instructors.Include(i => i.CourseAssignments).ThenInclude(c => c.Course).ToList();
+            List<Instructor> instructors = applicationDBContext.Instructors.Include(i => i.CourseAssignments).ThenInclude(c => c.Course).ToList();
             foreach (Instructor instructor in instructors)
             {
                 Console.WriteLine("instructor : " + instructor.FullName);
@@ -77,6 +77,71 @@ namespace Test
                     Console.WriteLine("           : CourseAssignments : " + course.Title);
                 }
             }
+        }
+
+        [TestMethod]
+        public void TestPagingCourse()
+        {
+            int pageSize = 2;
+            int nextIndex = 0;
+            int previousIndex = 0;
+            List<Course> courses = null;
+            courses = getPagingCourse(pageSize, nextIndex, previousIndex);
+            Assert.IsTrue(courses.Count == 2);
+            foreach (Course course in courses)
+            {
+                Console.Write("course name : " + course.Title);
+                Console.WriteLine(" course id : " + course.CourseID); 
+            }
+            // next
+            Console.WriteLine(" next page");
+            nextIndex = courses[1].CourseID;
+            courses = getPagingCourse(pageSize, nextIndex, previousIndex);
+            Assert.IsTrue(courses.Count == 2);
+            foreach (Course course in courses)
+            {
+                Console.Write("course name : " + course.Title);
+                Console.WriteLine(" course id : " + course.CourseID);
+            }
+            // previous
+            Console.WriteLine(" previous page");
+            nextIndex = 0;
+            previousIndex = courses[0].CourseID;
+            courses = getPagingCourse(pageSize, nextIndex, previousIndex);
+            Assert.IsTrue(courses.Count == 2);
+            foreach (Course course in courses)
+            {
+                Console.Write("course name : " + course.Title);
+                Console.WriteLine(" course id : " + course.CourseID);
+            }
+
+        }
+        private List<Course> getPagingCourse(int pageSize, int nextIndex, int previousIndex)
+        {
+            List<Course> courses = null;
+
+            if (nextIndex == 0 && previousIndex == 0)
+            {
+                courses = applicationDBContext.Courses.OrderBy(o => o.CourseID)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else if (nextIndex > 0)
+            {
+                courses = applicationDBContext.Courses.Where(w => w.CourseID > nextIndex)
+                   .OrderBy(o => o.CourseID)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else if (previousIndex > 0)
+            {
+                courses = applicationDBContext.Courses.Where(w => w.CourseID < previousIndex)
+                    .OrderByDescending(od => od.CourseID)
+                    .Take(pageSize)
+                    .OrderBy(o => o.CourseID)
+                    .ToList();
+            }
+            return courses;
         }
     }
 }
