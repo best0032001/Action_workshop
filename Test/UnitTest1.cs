@@ -63,5 +63,20 @@ namespace Test
                 }
             }
         }
+
+        [TestMethod]
+        public void TestGetInstructorCourseAssignmentst()
+        {
+            List<Instructor> instructors = _applicationDBContext.Instructors.Include(i => i.CourseAssignments).ThenInclude(c => c.Course).ToList();
+            foreach (Instructor instructor in instructors)
+            {
+                Console.WriteLine("instructor : " + instructor.FullName);
+                List<Course> Courses = instructor.CourseAssignments.Select(s => s.Course).ToList();
+                foreach (Course course in Courses)
+                {
+                    Console.WriteLine("           : CourseAssignments : " + course.Title);
+                }
+            }
+        }
     }
 }
