@@ -80,13 +80,13 @@ namespace Test
         }
 
         [TestMethod]
-        public void TestPagingCourse()
+        public void TestPagingMobileFeedCourse()
         {
             int pageSize = 2;
             int nextIndex = 0;
             int previousIndex = 0;
             List<Course> courses = null;
-            courses = getPagingCourse(pageSize, nextIndex, previousIndex);
+            courses = getPagingMobileFeedCourse(pageSize, nextIndex, previousIndex);
             Assert.IsTrue(courses.Count == 2);
             foreach (Course course in courses)
             {
@@ -96,7 +96,7 @@ namespace Test
             // next
             Console.WriteLine(" next page");
             nextIndex = courses[1].CourseID;
-            courses = getPagingCourse(pageSize, nextIndex, previousIndex);
+            courses = getPagingMobileFeedCourse(pageSize, nextIndex, previousIndex);
             Assert.IsTrue(courses.Count == 2);
             foreach (Course course in courses)
             {
@@ -107,7 +107,7 @@ namespace Test
             Console.WriteLine(" previous page");
             nextIndex = 0;
             previousIndex = courses[0].CourseID;
-            courses = getPagingCourse(pageSize, nextIndex, previousIndex);
+            courses = getPagingMobileFeedCourse(pageSize, nextIndex, previousIndex);
             Assert.IsTrue(courses.Count == 2);
             foreach (Course course in courses)
             {
@@ -116,7 +116,7 @@ namespace Test
             }
 
         }
-        private List<Course> getPagingCourse(int pageSize, int nextIndex, int previousIndex)
+        private List<Course> getPagingMobileFeedCourse(int pageSize, int nextIndex, int previousIndex)
         {
             List<Course> courses = null;
 
