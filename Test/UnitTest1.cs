@@ -1,6 +1,7 @@
 using ContosoUniversity.Models;
 using Microsoft.EntityFrameworkCore;
 using workshop.Model;
+using workshop.QueryableExtensions;
 
 namespace Test
 {
@@ -91,7 +92,7 @@ namespace Test
             foreach (Course course in courses)
             {
                 Console.Write("course name : " + course.Title);
-                Console.WriteLine(" course id : " + course.CourseID); 
+                Console.WriteLine(" course id : " + course.CourseID);
             }
             // next
             Console.WriteLine(" next page");
@@ -142,6 +143,41 @@ namespace Test
                     .ToList();
             }
             return courses;
+        }
+
+        [TestMethod]
+        public void TestPagingCourse()
+        {
+            int pageSize = 2;
+            int pageInddex = 1;
+
+            PagedResult<Course> pagedResult = applicationDBContext.Courses.OrderBy(o => o.CourseID).GetPaged(pageInddex, pageSize);
+            Console.Write(" PageCount : " + pagedResult.PageCount);
+            Console.Write(" PageSize : " + pagedResult.PageSize);
+            Console.Write(" CurrentPage : " + pagedResult.CurrentPage);
+            Console.WriteLine(" RowCount : " + pagedResult.RowCount);
+            List<Course> courses = pagedResult.Results.ToList();
+            Assert.IsTrue(courses.Count == 2);
+            foreach (Course course in courses)
+            {
+                Console.Write("course name : " + course.Title);
+                Console.WriteLine(" course id : " + course.CourseID);
+            }
+
+            pageInddex = 2;
+            pagedResult = applicationDBContext.Courses.OrderBy(o => o.CourseID).GetPaged(pageInddex, pageSize);
+            Console.Write(" PageCount : " + pagedResult.PageCount);
+            Console.Write(" PageSize : " + pagedResult.PageSize);
+            Console.Write(" CurrentPage : " + pagedResult.CurrentPage);
+            Console.WriteLine(" RowCount : " + pagedResult.RowCount);
+            courses = pagedResult.Results.ToList();
+            Assert.IsTrue(courses.Count == 2);
+            foreach (Course course in courses)
+            {
+                Console.Write("course name : " + course.Title);
+                Console.WriteLine(" course id : " + course.CourseID);
+            }
+
         }
     }
 }
