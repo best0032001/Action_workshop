@@ -152,11 +152,11 @@ namespace Test
             int pageInddex = 1;
 
             PagedResult<Course> pagedResult = applicationDBContext.Courses.OrderBy(o => o.CourseID).GetPaged(pageInddex, pageSize);
-            Console.Write(" PageCount : " + pagedResult.PageCount);
+            Console.Write(" PageCount : " + pagedResult.TotalPages);
             Console.Write(" PageSize : " + pagedResult.PageSize);
             Console.Write(" CurrentPage : " + pagedResult.CurrentPage);
-            Console.WriteLine(" RowCount : " + pagedResult.RowCount);
-            List<Course> courses = pagedResult.Results.ToList();
+            Console.WriteLine(" RowCount : " + pagedResult.TotalItems);
+            List<Course> courses = pagedResult.Rows.ToList();
             Assert.IsTrue(courses.Count == 2);
             foreach (Course course in courses)
             {
@@ -166,11 +166,11 @@ namespace Test
 
             pageInddex = 2;
             pagedResult = applicationDBContext.Courses.OrderBy(o => o.CourseID).GetPaged(pageInddex, pageSize);
-            Console.Write(" PageCount : " + pagedResult.PageCount);
+            Console.Write(" PageCount : " + pagedResult.TotalPages);
             Console.Write(" PageSize : " + pagedResult.PageSize);
             Console.Write(" CurrentPage : " + pagedResult.CurrentPage);
-            Console.WriteLine(" RowCount : " + pagedResult.RowCount);
-            courses = pagedResult.Results.ToList();
+            Console.WriteLine(" RowCount : " + pagedResult.TotalItems);
+            courses = pagedResult.Rows.ToList();
             Assert.IsTrue(courses.Count == 2);
             foreach (Course course in courses)
             {

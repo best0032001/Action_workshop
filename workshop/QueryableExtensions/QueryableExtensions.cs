@@ -21,14 +21,14 @@ namespace workshop.QueryableExtensions
             var result = new PagedResult<T>();
             result.CurrentPage = page;
             result.PageSize = pageSize;
-            result.RowCount = query.Count();
+            result.TotalItems = query.Count();
 
 
-            var pageCount = (double)result.RowCount / pageSize;
-            result.PageCount = (int)Math.Ceiling(pageCount);
+            var pageCount = (double)result.TotalItems / pageSize;
+            result.TotalPages = (int)Math.Ceiling(pageCount);
 
             var skip = (page - 1) * pageSize;
-            result.Results = query.Skip(skip).Take(pageSize).ToList();
+            result.Rows = query.Skip(skip).Take(pageSize).ToList();
 
             return result;
         }

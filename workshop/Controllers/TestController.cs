@@ -1,7 +1,11 @@
-﻿using ITSC_API_GATEWAY_LIB;
+﻿using ContosoUniversity.Models;
+using ITSC_API_GATEWAY_LIB;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
+using workshop.Model;
 using workshop.Model.Entitys;
+using workshop.QueryableExtensions;
 
 namespace workshop.Controllers
 {
@@ -31,7 +35,16 @@ namespace workshop.Controllers
 
             userEntity.FullName = "test";
 
-            return Ok(userEntity);
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDBContext>();
+            optionsBuilder.UseSqlServer(@"Server=127.0.0.1;Database=workshop;user id=sa;password=Password[12345];Trust Server Certificate = true");
+            var applicationDBContext = new ApplicationDBContext(optionsBuilder.Options);
+
+            int pageSize = 2;
+            int pageInddex = 1;
+
+            PagedResult<Course> pagedResult = applicationDBContext.Courses.OrderBy(o => o.CourseID).GetPaged(pageInddex, pageSize);
+
+            return Ok(pagedResult);
         }
 
         /// <summary>

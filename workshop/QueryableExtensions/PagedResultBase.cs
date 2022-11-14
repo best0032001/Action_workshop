@@ -3,9 +3,9 @@
     public abstract class PagedResultBase
     {
         public int CurrentPage { get; set; }
-        public int PageCount { get; set; }
+        public int TotalPages { get; set; }
         public int PageSize { get; set; }
-        public int RowCount { get; set; }
+        public int TotalItems { get; set; }
 
         public int FirstRowOnPage
         {
@@ -15,16 +15,16 @@
 
         public int LastRowOnPage
         {
-            get { return Math.Min(CurrentPage * PageSize, RowCount); }
+            get { return Math.Min(CurrentPage * PageSize, TotalItems); }
         }
     }
     public class PagedResult<T> : PagedResultBase where T : class
     {
-        public IList<T> Results { get; set; }
+        public IList<T> Rows { get; set; }
 
         public PagedResult()
         {
-            Results = new List<T>();
+            Rows = new List<T>();
         }
     }
 
